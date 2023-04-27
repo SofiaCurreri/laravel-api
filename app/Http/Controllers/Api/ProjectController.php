@@ -15,7 +15,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $project = Project::where('is_published', true);
+        $project = Project::where('is_published', true)
+            ->with('type', 'technologies')
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+        return response()->json('projects');
     }
 
     /**
