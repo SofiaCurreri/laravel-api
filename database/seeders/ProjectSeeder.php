@@ -23,12 +23,16 @@ class ProjectSeeder extends Seeder
         $types[] = null;
 
         for($i = 0; $i < 40; $i++) {
+            $type_id = (random_int(0, 1) === 1) ? $faker->randomElement($types) : null;
+
             $project = new Project;
-            $project->type_id = $faker->randomElement($types);
+            $project->type_id = $type_id;
             $project->title = $faker->catchPhrase();
             $project->slug = Str::of($project->title)->slug('-');
             // $project->image= $faker->imageUrl(640, 480, 'animals', true);
             $project->text = $faker->paragraph(35);
+            $project->is_published = random_int(0, 1);
+
             $project->save();
         }
     }
