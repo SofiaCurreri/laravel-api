@@ -19,6 +19,11 @@ class ProjectController extends Controller
             ->with('type', 'technologies')
             ->orderBy('updated_at', 'DESC')
             ->get();
+
+        foreach($projects as $project) {
+            $project->text = $project->getAbstract(180);
+        }
+
         return response()->json($projects);
     }
 
