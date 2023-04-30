@@ -19,8 +19,7 @@ class ProjectSeeder extends Seeder
     public function run(Faker $faker) //dependency injection
     {
         //la collection mi diventa un array normale con gli id delle categorie grazie a pluck()
-        $types = Type::all()->pluck('id');
-        $types[] = null;
+        $types = Type::all()->pluck('id')->toArray();
 
         for($i = 0; $i < 40; $i++) {
             $type_id = (random_int(0, 1) === 1) ? $faker->randomElement($types) : null;
