@@ -8,6 +8,7 @@ use App\Models\Technology;
 use App\Mail\PublishedProjectMail;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
@@ -98,10 +99,15 @@ class ProjectController extends Controller
 
         if(Arr::exists($data, "technologies")) $project->technologies()->attach($data["technologies"]);
 
-        $mail = new PublishedProjectMail($project);
-        //Auth::user() mi permette di accedere alle info dello user loggato
-        $user_email = Auth::user()->email;
-        Mail::to($user_email)->send($mail);
+        //per mandare mail a tutti gli utenti registrati nel db
+        if($project->is_published) {
+            //Auth::user() mi permette di accedere alle info dello user loggato
+            $users = User::select('email')->where('id', '<>', Auth::id())->get();
+            $mail = new PublishedProjectMail($project);
+            foreach($users as $user) {
+                Mail::to($user->email)->send($mail);
+            }
+        }
 
         return to_route('admin.projects.show',$project)
             ->with('message_content', 'Post creato con successo');
