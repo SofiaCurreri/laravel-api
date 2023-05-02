@@ -48,10 +48,11 @@ class PublishedProjectMail extends Mailable
     {
         $project = $this->project;
         $published_text = $project->is_published ? 'Il progetto è stato pubblicato' : 'Il progetto è stato ritirato';
+        $button_url = env('APP_FRONTEND_URL') . '/projects/' . $project->slug;
 
         return new Content(
-            view: 'mails.projects.published',
-            with: compact('project', 'published_text')
+            markdown: 'mails.projects.published',
+            with: compact('project', 'published_text', 'button_url')
             // with: [
             //     'project' => $project,
             //     'published_text' => $published_text,
