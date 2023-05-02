@@ -99,10 +99,7 @@ class ProjectController extends Controller
         if(Arr::exists($data, "technologies")) $project->technologies()->attach($data["technologies"]);
 
         if($project->is_published) {
-            $mail = new PublishedProjectMail($project);
-            //Auth::user() mi permette di accedere alle info dello user loggato
-            $user_email = Auth::user()->email;
-            Mail::to($user_email)->send($mail);
+            $this->sendPublishedMail($project);
         }
 
         //per mandare mail a tutti gli utenti registrati nel db
@@ -198,10 +195,7 @@ class ProjectController extends Controller
         $project->update($data);
 
         if($initial_status != $project->is_published) {
-            $mail = new PublishedProjectMail($project);
-            //Auth::user() mi permette di accedere alle info dello user loggato
-            $user_email = Auth::user()->email;
-            Mail::to($user_email)->send($mail);
+            $this->sendPublishedMail($project);
         }
         
         if(Arr::exists($data, "technologies")) $project->technologies()->sync($data["technologies"]);
@@ -286,5 +280,14 @@ class ProjectController extends Controller
         
         return to_route('admin.projects.index')
             ->with('message_content', "Post $id ripristinato correttamente"); // <= per la flesh session
+    }
+
+
+    //centralizzato invio mail
+    private function sendPublishedMail(Project $project) {
+        $mail = new PublishedProjectMail($project);
+        //Auth::user() mi permette di accedere alle info dello user loggato
+        $user_email = Auth::user()->email;
+        Mail::to($user_email)->send($mail);
     }
 }
