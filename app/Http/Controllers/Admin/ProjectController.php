@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\Type;
+use App\Models\Technology;
+use App\Mail\PublishedProjectMail;
 
 use App\Http\Controllers\Controller;
-use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -95,6 +98,11 @@ class ProjectController extends Controller
 
         if(Arr::exists($data, "technologies")) $project->technologies()->attach($data["technologies"]);
 
+        $mail = new PublishedProjectMail($project);
+        //Auth::user() mi permette di accedere alle info dello user loggato
+        $user_email = Auth::user()->email;
+        Mail::to($user_email)->send($mail);
+
         return to_route('admin.projects.show',$project)
             ->with('message_content', 'Post creato con successo');
     }
@@ -157,6 +165,8 @@ class ProjectController extends Controller
             'technologies.exists' => 'Le tecnologie selezionate non sono valide'
         ]);
 
+        $initial_status = $project->is_published;
+
         $data = $request->all(); //per non scrivere $request->all() per intero ogni volta
         $data["slug"] = Project::generateSlug($data["title"]);
         $data["is_published"] = $request->has("is_published") ? 1 : 0;
@@ -175,8 +185,17 @@ class ProjectController extends Controller
         
         //update() = fill() + save()
         $project->update($data);
+
+        if($initial_status != $project->is_published) {
+            $mail = new PublishedProjectMail($project);
+            //Auth::user() mi permette di accedere alle info dello user loggato
+            $user_email = Auth::user()->email;
+            Mail::to($user_email)->send($mail);
+        }
+        
         if(Arr::exists($data, "technologies")) $project->technologies()->sync($data["technologies"]);
         else $project->technologies()->detach();
+
 
         //return to_route = redirect
         return to_route('admin.projects.show', $project)
