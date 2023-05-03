@@ -21,7 +21,8 @@ class ProjectController extends Controller
             ->paginate(6);
 
         foreach($projects as $project) {
-            $project->text = $project->getAbstract(180);
+            // $project->text = $project->getAbstract(180);
+            $project->image = $project->getImageUri();
         }
 
         return response()->json($projects);
@@ -48,6 +49,8 @@ class ProjectController extends Controller
     {
         $project = Project::where('slug', $slug)->with('type', 'technologies')->first();
         if(!$project) return response(null, 404);
+
+        $project->image = $project->getImageUri();
 
         return response()->json($project);
     }
