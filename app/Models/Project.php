@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+// Carbon è una libreria per gestire le date
+use Carbon\Carbon;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -52,7 +55,8 @@ class Project extends Model
 
     //funzione(mutator) per modificare formato data in cui si presenta l' updated_at
     protected function getUpdatedAtAttribute($value) {
-        return date('d/m/Y H:i', strtotime($value));
+        // return date('d/m/Y H:i', strtotime($value));
+        return Carbon::now()->format('d/m/Y H:i');
     }
 
     //funzione(mutator) per modificare formato data in cui si presenta il created_at
