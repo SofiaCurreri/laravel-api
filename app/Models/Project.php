@@ -56,12 +56,18 @@ class Project extends Model
     //funzione(mutator) per modificare formato data in cui si presenta l' updated_at
     protected function getUpdatedAtAttribute($value) {
         // return date('d/m/Y H:i', strtotime($value));
-        return Carbon::now()->format('d/m/Y H:i');
+        $date_from = Carbon::create($value);
+        $date_now = Carbon::now(); 
+        return str_replace('prima', 'fa', $date_from->diffForHumans($date_now));
+        // return Carbon::now()->format('d/m/Y H:i');
     }
 
     //funzione(mutator) per modificare formato data in cui si presenta il created_at
     protected function getCreatedAtAttribute($value) {
-        return date('d/m/Y H:i', strtotime($value));
+        Carbon::setLocale('it');
+        $date_from = Carbon::create($value);
+        $date_now = Carbon::now(); 
+        return str_replace('prima', 'fa', $date_from->diffForHumans($date_now));
     }
 
     //funzione(non mutator) per mostrare placeholder dell' immagine qualora essa non ci sia
