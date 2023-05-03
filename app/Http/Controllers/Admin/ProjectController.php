@@ -14,6 +14,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -58,32 +59,9 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-
-        //validation
-        $request->validate([
-            'title' => 'required|string|max:100',
-            'text' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,png,jpeg',
-            'is_published' => 'boolean',
-            'type_id' => 'nullable|exists:types,id',
-            'technologies' => 'nullable|exists:technologies,id',
-        ], 
-        [
-            'title.required' => 'Il titolo è obbligatorio',
-            'title.string' => 'Il titolo deve essere una stringa',
-            'title.max' => 'Il titolo può avere 100 caratteri al massimo',
-
-            'text.required' => 'Il contenuto è obbligatorio',
-            'text.string' => 'Il contenuto deve essere una stringa',
-
-            'image.image' => 'Il file caricato deve essere un\'immagine',
-            'image.mimes' => 'Le estensioni accettate per l\' immagine sono jpg, png, jpeg',
-
-            'type_id.exists' => 'L\' id della categoria non è valido',
-            'technologies.exists' => 'Le tecnologie selezionate non sono valide'
-        ]);
-
         $data = $request->all(); //per non scrivere $request->all() per intero ogni volta
+        $this->validation($data);
+
 
         if(Arr::exists($data, 'image')) { //$data = array mentre 'image' = chiave che stai cercando
             $path = Storage::put('uploads/projects', $data['image']); //Metti in public/storage/uploads/projects l' immagine che riceviamo
@@ -149,29 +127,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //validation
-        $request->validate([
-            'title' => 'required|string|max:100',
-            'text' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,png,jpeg',
-            'is_published' => 'boolean',
-            'type_id' => 'nullable|exists:types,id',
-            'technologies' => 'nullable|exists:technologies,id'
-        ], 
-        [
-            'title.required' => 'Il titolo è obbligatorio',
-            'title.string' => 'Il titolo deve essere una stringa',
-            'title.max' => 'Il titolo può avere 100 caratteri al massimo',
-
-            'text.required' => 'Il contenuto è obbligatorio',
-            'text.string' => 'Il contenuto deve essere una stringa',
-
-            'image.image' => 'Il file caricato deve essere un\'immagine',
-            'image.mimes' => 'Le estensioni accettate per l\' immagine sono jpg, png, jpeg',
-
-            'type_id.exists' => 'L\' id della categoria non è valido',
-            'technologies.exists' => 'Le tecnologie selezionate non sono valide'
-        ]);
+        $this->validation($request->all());
 
         $initial_status = $project->is_published;
 
@@ -289,5 +245,35 @@ class ProjectController extends Controller
         //Auth::user() mi permette di accedere alle info dello user loggato
         $user_email = Auth::user()->email;
         Mail::to($user_email)->send($mail);
+    }
+
+
+    //centralizzare validazione
+    private function validation($data) {
+        return Validator::make(
+            $data,
+            [
+                'title' => 'required|string|max:100',
+                'text' => 'required|string',
+                'image' => 'nullable|image|mimes:jpg,png,jpeg',
+                'is_published' => 'boolean',
+                'type_id' => 'nullable|exists:types,id',
+                'technologies' => 'nullable|exists:technologies,id'
+            ], 
+            [
+                'title.required' => 'Il titolo è obbligatorio',
+                'title.string' => 'Il titolo deve essere una stringa',
+                'title.max' => 'Il titolo può avere 100 caratteri al massimo',
+    
+                'text.required' => 'Il contenuto è obbligatorio',
+                'text.string' => 'Il contenuto deve essere una stringa',
+    
+                'image.image' => 'Il file caricato deve essere un\'immagine',
+                'image.mimes' => 'Le estensioni accettate per l\' immagine sono jpg, png, jpeg',
+    
+                'type_id.exists' => 'L\' id della categoria non è valido',
+                'technologies.exists' => 'Le tecnologie selezionate non sono valide'
+            ]
+        )->validate();
     }
 }
