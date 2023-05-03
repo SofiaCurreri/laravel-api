@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('projects', ProjectController::class)->except('store', 'update', 'destroy');
+
+Route::get('/type/{type_id}/projects', [ProjectController::class, 'getProjectsByType']);
