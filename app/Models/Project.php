@@ -5,6 +5,7 @@ namespace App\Models;
 // Carbon è una libreria per gestire le date
 use Carbon\Carbon;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,6 +25,11 @@ class Project extends Model
     //relazione N(projects) a N(technologies)
     public function technologies() {
         return $this->belongsToMany(Technology::class);
+    }
+
+    //relazione 1(project) a N(comments) con Comment
+    public function comments() {
+        return $this->hasMany(Comment::class);
     }
 
     //funzione per generare un abstract del text
