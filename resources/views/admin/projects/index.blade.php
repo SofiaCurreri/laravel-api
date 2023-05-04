@@ -40,11 +40,11 @@
                       </th>
                        
                       <th scope="col">
-                        Tipo
+                        <a href="{{route('admin.types.index')}}">Tipo</a> 
                       </th>
 
                       <th scope="col">
-                        Tecnologia
+                        <a href="#">Tecnologia</a> 
                       </th>
                       
                       <th scope="col">
@@ -93,18 +93,20 @@
                             <td>{{$project->getAbstract(20)}}</td>
                             <td>{{$project->created_at}}</td>
                             <td>{{$project->updated_at}}</td>
-                            <td class="d-flex justify-content-end">
-                                <a href="{{route('admin.projects.show', $project)}}">
-                                    <i class="bi bi-eye mx-2"></i>
-                                </a>   
-                                
-                                <a href="{{route('admin.projects.edit', $project)}}">
-                                    <i class="bi bi-pencil mx-2"></i>
-                                </a> 
-
-                                <a href="{{route('admin.projects.destroy', $project)}}" data-bs-toggle = "modal" data-bs-target = "#delete-project-modal-{{$project->id}}">
-                                    <i class="bi bi-trash text-danger mx-2"></i>
-                                </a> 
+                            <td class="col">
+                                <div class="d-flex">
+                                    <a href="{{route('admin.projects.show', $project)}}">
+                                        <i class="bi bi-eye mx-2"></i>
+                                    </a>   
+                                    
+                                    <a href="{{route('admin.projects.edit', $project)}}">
+                                        <i class="bi bi-pencil mx-2"></i>
+                                    </a> 
+    
+                                    <a href="{{route('admin.projects.destroy', $project)}}" data-bs-toggle = "modal" data-bs-target = "#delete-project-modal-{{$project->id}}">
+                                        <i class="bi bi-trash text-danger mx-2"></i>
+                                    </a> 
+                                </div>
                             </td>               
                         </tr>
                     @empty

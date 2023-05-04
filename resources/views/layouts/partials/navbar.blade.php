@@ -2,13 +2,13 @@
     <div class="container">
         @auth
         <a class="navbar-brand d-flex align-items-center" href="{{ url('home') }} ">          
-            <h1 class="text-primary"> {{env('APP_NAME')}} </h1>
+            <h1 class="text-primary"> {{env('APP_NAME', 'Portfolio')}} </h1>
         </a>
         @endauth
 
         @guest
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }} ">          
-            <h1 class="text-primary"> {{env('APP_NAME')}} </h1>
+            <h1 class="text-primary"> {{env('APP_NAME', 'Portfolio')}} </h1>
         </a>
         @endguest
 
