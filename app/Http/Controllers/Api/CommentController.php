@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -16,7 +17,18 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json("ok");
+        $request->validate([
+            'project_id' => 'required|integer|exists:projects,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        $comment = new Comment();
+        $comment->fill($request->all());
+        $comment->save();
+
+        return response()->json();
     }
 
     /**
