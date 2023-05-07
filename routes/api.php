@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('projects', ProjectController::class)->except('store', 'update', 'destroy');
 
+//qui vogliamo i progetti relativi a quel tipo
 Route::get('/type/{type_id}/projects', [ProjectController::class, 'getProjectsByType']);
 
+//qui vogliamo i commenti relativi a quel progetto
+Route::get('project/{project_id}/comments', [CommentController::class, 'getCommentsByProject']);
 Route::post('comments', [CommentController::class, 'store']);
