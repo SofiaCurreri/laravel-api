@@ -28,7 +28,7 @@ class CommentController extends Controller
         $comment->fill($request->all());
         $comment->save();
 
-        return response()->json();
+        return response()->json(['success' => 'true']);
     }
 
     /**
